@@ -32,21 +32,18 @@ if __name__ == "__main__":
     num_timepoints = 10
     test = False
     
-    cohorts = ['TCGA-BRCA']
+    cohorts = ['TCGA-COAD']
     n = len(cohorts)
-    
-    max_scores_alive, max_scores_dead = get_scores_timeline('TCGA-BRCA', test = test, num_timepoints=num_timepoints)
-    avg_scores_alive = np.mean(max_scores_alive, axis=0)
-    avg_scores_dead = np.mean(max_scores_dead, axis=0)
-    stdev_scores_alive = np.std(max_scores_alive, axis=0)
-    stdev_scores_dead = np.std(max_scores_dead, axis=0)
-
-    
     
     fig, axs = plt.subplots(n, 2, figsize=(12, 5*n))
     fig.tight_layout(pad=4)  # Space between plots
     
     for i in range(n):
+        max_scores_alive, max_scores_dead = get_scores_timeline(cohorts[i], test = test, num_timepoints=num_timepoints)
+        avg_scores_alive = np.mean(max_scores_alive, axis=0)
+        avg_scores_dead = np.mean(max_scores_dead, axis=0)
+        stdev_scores_alive = np.std(max_scores_alive, axis=0)
+        stdev_scores_dead = np.std(max_scores_dead, axis=0)
         plt.subplot(n,2,i*2+1)
         plt.plot(avg_scores_alive, label='Surviving', color='blue', marker='o')
         plt.plot(avg_scores_dead, label='Deceased', color='red', marker='o')
@@ -55,15 +52,15 @@ if __name__ == "__main__":
         plt.xlabel('Relative Time')
         plt.ylabel('Risk Score of Most Dangerous Clone')
         plt.legend()
-        plt.title(f'({chr(96+i*2+1)}) Max Risk Score of TCGA-BRCA by Time')
+        plt.title(f'({chr(96+i*2+1)}) Max Risk Score of {cohorts[i]} by Time')
         plt.subplot(n,2,i*2+2)
         pvals = [ttest_ind(max_scores_alive[:,i], max_scores_dead[:,i])[1] for i in range(num_timepoints)]
         plt.plot(pvals, marker='o', color='blue')
         plt.xlabel('Relative Time')
         plt.ylabel('P-Value')
-        plt.title(f'({chr(96+i*2+2)}) T-Test P-Values of TCGA-BRCA')
+        plt.title(f'({chr(96+i*2+2)}) T-Test P-Values of {cohorts[i]}')
     
     
-    plt.savefig('max_score_by_time.png')
+    plt.show()
     
     
