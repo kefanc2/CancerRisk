@@ -6,7 +6,7 @@ Understanding the evolution of cancer in its early stages is critical to identif
 
 
 ## Workflow
-![plot](workflow.png)
+![plot](pipeline.png)
 
 ## Requirements
 ### 1. Create a virtual environment
